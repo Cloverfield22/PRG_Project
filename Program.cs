@@ -1,6 +1,7 @@
 ﻿//Ryan Thurbon 600654
 
 using System;
+using System.Collections.Generic;
 
 namespace PRG_Project
 {
@@ -9,32 +10,32 @@ namespace PRG_Project
     class Income
     {
         private decimal Amount;
-        private string Category;
+        private IncomeSources Source;
         private DateTime Date;
         private string Description;
 
-        public Income(decimal amount, string category, DateTime date, string description)
+        public Income(decimal amount, IncomeSources source, DateTime date, string description)
         {
             Amount = amount;
-            Category = category;
+            Source = source;
             Date = date;
             Description = description;
         }
 
         public void DisplayDetails()
         {
-            Console.WriteLine($"Expense Description:{Description} Amount:{Amount} Date:{Date} Category:{Category}");
+            Console.WriteLine($"Expense Description:{Description} Amount:{Amount} Date:{Date} Category:{Source}");
         }
     }
 
     class Expense
     {
         private decimal Amount;
-        private string Category;
+        private ExpenseCategories Category;
         private DateTime Date;
         private string Description;
 
-        public Expense(decimal amount, string category, DateTime date, string description)
+        public Expense(decimal amount, ExpenseCategories category, DateTime date, string description)
         {
             Amount = amount;
             Category = category;
@@ -48,6 +49,24 @@ namespace PRG_Project
         }
     }
 
+    enum ExpenseCategories
+    {
+        Food = 1,
+        Transport,
+        Alcohol,
+        Clothes,
+        Activities,
+        Other
+    }
+
+    enum IncomeSources
+    {
+        Salary,
+        PartTime_Work,
+        Gift,
+        Investment_Income,
+        Other
+    }
 
 
     //it's abstract so that common methods can be shared
@@ -172,10 +191,92 @@ namespace PRG_Project
 
     }
 
+
+
     class Program
     {
         static void Main()
         {
+            // Adding Incomes and Expenses
+
+
+            Console.WriteLine("----- ADDING INCOMES AND EXPENSES -----");
+            Console.WriteLine("Please choose from the options below. Select the number.");
+            Console.WriteLine("1. Add an Income");
+            Console.WriteLine("2. Add an Expense");
+
+            int IncExp_answer = int.Parse(Console.ReadLine());
+            List<Income> incomesList = new List<Income>();
+            List<Expense> expensesList = new List<Expense>();
+
+            switch (IncExp_answer)
+            {
+                case 1:
+                    bool correctDetails = false;
+                    while (correctDetails == false)
+                    {
+                        Console.WriteLine("Description: ");
+                        string description = Console.ReadLine();
+                        Console.WriteLine("Amount: ");
+                        decimal amount = decimal.Parse(Console.ReadLine());
+                        Console.WriteLine("Date: (Format: dd-mm-yyyy)");
+                        DateTime date = DateTime.Parse(Console.ReadLine());
+                        Console.WriteLine("Please pick the income source: ");
+                        foreach (IncomeSources incomeItem in Enum.GetValues(typeof(IncomeSources)))
+                        {
+                            Console.WriteLine($"{(int)incomeItem}. {incomeItem.ToString()}");
+                        }
+                        int sourceChoice = int.Parse(Console.ReadLine());
+                        IncomeSources source = (IncomeSources)sourceChoice;
+                        Console.WriteLine("Please confirm if expense is correct");
+                        Console.WriteLine("1. Confirm");
+                        Console.WriteLine("2. Retry");
+                        int confirmationAnswer = int.Parse(Console.ReadLine());
+                        if (confirmationAnswer == 1)
+                        {
+                            correctDetails = true;
+                            Income income = new Income(amount, source, date, description);
+                            incomesList.Add(income);
+                        }
+                    }
+
+                    
+                    break;
+
+                case 2:
+                    correctDetails = false;
+                    while (correctDetails == false)
+                    {
+                        Console.WriteLine("Description: ");
+                        string description = Console.ReadLine();
+                        Console.WriteLine("Amount: ");
+                        decimal amount = decimal.Parse(Console.ReadLine());
+                        Console.WriteLine("Date: (Format: dd-mm-yyyy)");
+                        DateTime date = DateTime.Parse(Console.ReadLine());
+                        Console.WriteLine("Please pick the category the expense belongs to: ");
+                        foreach (ExpenseCategories categoryItem in Enum.GetValues(typeof(ExpenseCategories)))
+                        {
+                            Console.WriteLine($"{(int)categoryItem}. {categoryItem.ToString()}");
+                        }
+                        int categoryChoice = int.Parse(Console.ReadLine());
+                        ExpenseCategories category = (ExpenseCategories)categoryChoice;
+                        Console.WriteLine("Please confirm if expense is correct");
+                        Console.WriteLine("1. Confirm");
+                        Console.WriteLine("2. Retry");
+                        int confirmationAnswer = int.Parse(Console.ReadLine());
+                        if (confirmationAnswer == 1)
+                        {
+                            correctDetails = true;
+                            Expense expense = new Expense(amount, category, date, description);
+                            expensesList.Add(expense);
+                        }
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Please choose 1 or 2.");
+                    break;
+            }
+
             //new class instance
             AccountLimitSystem accountLimitSystem = new AccountLimitSystem();
 
